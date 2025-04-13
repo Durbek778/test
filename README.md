@@ -32,3 +32,72 @@ Each integer key is uniquely mapped to a **Record ID (RID)**. The implementation
 
 ## 🧱 Project Structure
 
+
+---
+
+## 🔑 Major Components
+
+### 1. `btree_mgr.h`
+
+Defines the core API of the B+ Tree Index Manager:
+- **Initialization:** `initIndexManager()`, `shutdownIndexManager()`
+- **Metadata Management:** `createBtree()`, `openBtree()`, `closeBtree()`, `deleteBtree()`
+- **Key Operations:** `insertKey()`, `findKey()`, `deleteKey()`
+- **Scan Operations:** `openTreeScan()`, `nextEntry()`, `closeTreeScan()`
+- **Utilities:** `printTree()`, `getNumNodes()`, `getNumEntries()`
+
+> Note: Node splitting and balancing are not implemented. The tree grows as a flat, linked structure.
+
+---
+
+### 2. `expr.h`
+
+Defines the **expression evaluation** system used in scans:
+- **Types:** Constants, Attribute References (partially used), Operators
+- **Operators:** Comparison (`==`, `<`, etc.), Logical (`AND`, `OR`, `NOT`)
+- **Function:** `evalExpr()` evaluates conditions during scans
+
+---
+
+### 3. `tables.h`
+
+Reused from the Record Manager to define:
+- **Value** (only `DT_INT` used here)
+- **RID** (page + slot)
+- **Schema and Record** (minimally used for evaluation compatibility)
+
+---
+
+## 🧪 Test Cases
+
+### `test_expr.c` – Expression Tests
+- Integer/string comparison
+- Boolean logic: `AND`, `OR`, `NOT`
+- Nested expression evaluation
+- Edge case handling for types
+
+### `test_assign4_1.c` – Index Tests
+- **Insert & Find:** Verifies RID retrieval and node/entry count
+- **Delete:** Ensures deleted entries are excluded
+- **Scan:** Sorted traversal validation with random order insertions
+- Uses assertions: `ASSERT_EQUALS_RID()` and `ASSERT_EQUALS_INT()` for accuracy
+
+---
+
+## 🚫 Features Not Implemented (Future Work)
+
+- Node splitting & dynamic balancing  
+- Null value support  
+- Primary key enforcement  
+- Tombstone records / transaction tracking  
+- External sorting for large datasets  
+- Interactive CLI or update-based scans  
+
+---
+
+## 🔧 Build & Run
+
+To compile the project, simply run:
+
+```bash
+make
